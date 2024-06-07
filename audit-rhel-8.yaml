@@ -27,11 +27,8 @@
         --results-arf results.xml
         --report {{ ansible_default_ipv4.address }}.html
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
-      register: oscap_scan
       ignore_errors: yes
 
     - name: Copy the report to the remote server
       ansible.builtin.shell: |
         sshpass -p '{{ remote_password }}' scp -o StrictHostKeyChecking=no {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
-      when: oscap_scan is succeeded
-      become: yes

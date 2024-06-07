@@ -32,19 +32,16 @@
       when: scap_security_guide_installed.rc != 0
 
     - name: Run oscap scan
-      command: >
+      ansible.builtin.shell: |
         oscap xccdf eval
         --profile {{ profile }}
         --results-arf results.xml
         --report {{ ansible_default_ipv4.address }}.html
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
-      args:
-        creates: "{{ ansible_default_ipv4.address }}.html"
 
     - name: Copy the report to the remote server
       delegate_to: localhost
       become: no
       ansible.builtin.shell: |
-        sshpass -p '{{ remote_password }}' scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
-      args:
-        creates: "{{ remote_path }}/{{ ansible_default_ipv4.address }}.html"
+        scp -r {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
+

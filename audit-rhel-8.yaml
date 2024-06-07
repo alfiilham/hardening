@@ -36,7 +36,7 @@
         oscap xccdf eval
         --profile {{ profile }}
         --results-arf results.xml
-        --report {{ ip_address }}.html
+        --report {{ ansible_default_ipv4.address }}.html
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
       args:
         creates: "{{ ansible_default_ipv4.address }}.html"

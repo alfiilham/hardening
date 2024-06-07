@@ -41,6 +41,10 @@
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
       ignore_errors: yes
 
+      - name: install sshpass
+      ansible.builtin.shell: |
+        yum install sshpass -y
+
     - name: Copy the report to the remote server
       ansible.builtin.shell: |
-        scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
+        sshpass -p '{{ remote_password }}' scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}

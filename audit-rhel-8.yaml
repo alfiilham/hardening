@@ -39,7 +39,7 @@
         --report {{ ip_address }}.html
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
       args:
-        creates: "{{ address }}.html"
+        creates: "{{ host }}.html"
 
     - name: Copy the report to the remote server
       delegate_to: localhost

@@ -5,3 +5,13 @@
 
   roles:
     - role: RHEL8-CIS-Audit
+
+  tasks:
+  - name: Run RHEL8-CIS-Audit
+    include_role:
+      name: RHEL8-CIS-Audit
+    register: audit_result
+
+  - name: Display audit results
+    debug:
+      var: audit_result

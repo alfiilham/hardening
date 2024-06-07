@@ -1,0 +1,19 @@
+---
+- name: Apply RHEL 8 CIS Hardening and Run Audit
+  hosts: level1-server
+  become: yes
+
+  roles:
+    - role: RHEL8-CIS
+      vars:
+        rhel8cis_section1: {{section1}}
+        rhel8cis_section2: {{section2}}
+        rhel8cis_section3: {{section3}}
+        rhel8cis_section4: {{section4}}
+        rhel8cis_section5: {{section5}}
+        rhel8cis_section6: {{section6}}
+
+  post_tasks:
+    - name: Run RHEL8-CIS-Audit
+      include_role:
+        name: RHEL8-CIS-Audit

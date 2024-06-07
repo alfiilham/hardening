@@ -41,9 +41,13 @@
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
       ignore_errors: yes
 
-    - name: install sshpass
-      ansible.builtin.shell: |
-        yum install sshpass -y
+    - name: Ensure sshpass is installed
+      ansible.builtin.yum:
+        name: sshpass
+        state: present
+      become: yes
+      tags: 
+        - sshpass
 
     - name: Copy the report to the remote server
       ansible.builtin.shell: |

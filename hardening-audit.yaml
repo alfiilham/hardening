@@ -1,6 +1,6 @@
 ---
 - name: Apply RHEL 8 CIS Hardening and Run Audit
-  hosts: level1-server
+  hosts: all
   become: yes
 
   roles:

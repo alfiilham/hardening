@@ -42,9 +42,5 @@
       ignore_errors: yes
 
     - name: Copy the report to the remote server
-      delegate_to: localhost
-      become: no
       ansible.builtin.shell: |
-        sshpass -p '{{ remote_password }}' scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
-      args:
-        creates: "{{ remote_path }}/{{ ansible_default_ipv4.address }}.html"
+        scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}

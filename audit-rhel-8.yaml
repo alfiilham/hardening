@@ -47,4 +47,4 @@
       ansible.builtin.shell: |
         sshpass -p '{{ remote_password }}' scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
       args:
-        creates: "{{ remote_path }}/{{ ip_address }}.html"
+        creates: "{{ remote_path }}/{{ ansible_default_ipv4.address }}.html"

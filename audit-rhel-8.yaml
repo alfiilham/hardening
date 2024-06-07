@@ -33,11 +33,7 @@
 
     - name: Run oscap scan
       ansible.builtin.shell: |
-        oscap xccdf eval
-        --profile {{ profile }}
-        --results-arf results.xml
-        --report {{ ansible_default_ipv4.address }}.html
-        /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+        oscap xccdf eval --profile {{ profile }} --results-arf results.xml --report {{ ansible_default_ipv4.address }}.html /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
 
     - name: Copy the report to the remote server
       delegate_to: localhost

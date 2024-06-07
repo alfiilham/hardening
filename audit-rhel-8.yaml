@@ -39,5 +39,5 @@
       delegate_to: localhost
       become: no
       ansible.builtin.shell: |
-        scp -r {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
+        sshpass -p '{{ remote_password }}' scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
 

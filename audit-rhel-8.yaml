@@ -7,11 +7,22 @@
     - role: RHEL8-CIS-Audit
 
   tasks:
-  - name: Run RHEL8-CIS-Audit
-    include_role:
-      name: RHEL8-CIS-Audit
-    register: audit_result
+    - name: Run RHEL8-CIS-Audit
+      include_role:
+        name: RHEL8-CIS-Audit
+      register: audit_result
 
-  - name: Display audit results
-    debug:
-      var: audit_result
+    - name: Display audit results
+      debug:
+        var: audit_result
+
+    - name: Read the audit report file
+      become: yes
+      ansible.builtin.command:
+        cmd: cat /path/to/audit/report/file
+      register: report_content
+      ignore_errors: yes
+
+    - name: Display the audit report content
+      debug:
+        var: report_content.stdout

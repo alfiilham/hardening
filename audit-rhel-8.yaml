@@ -41,7 +41,7 @@
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
       ignore_errors: yes
 
-      - name: install sshpass
+    - name: install sshpass
       ansible.builtin.shell: |
         yum install sshpass -y
 

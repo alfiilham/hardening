@@ -39,12 +39,12 @@
         --report {{ ip_address }}.html
         /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
       args:
-        creates: "{{ ip_address }}.html"
+        creates: "{{ ansible_default_ipv4.address }}.html"
 
     - name: Copy the report to the remote server
       delegate_to: localhost
       become: no
       ansible.builtin.shell: |
-        sshpass -p '{{ remote_password }}' scp {{ ip_address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
+        sshpass -p '{{ remote_password }}' scp {{ ansible_default_ipv4.address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
       args:
         creates: "{{ remote_path }}/{{ ip_address }}.html"

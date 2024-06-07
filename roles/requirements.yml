@@ -1,4 +1,8 @@
 ---
 - name: RHEL8-CIS
-  src: git+https://github.com/ansible-lockdown/RHEL8-CIS.git
-  version: main
+  src: https://github.com/ansible-lockdown/RHEL8-CIS.git
+  version: master
+
+- name: RHEL8-CIS-Audit
+  src: https://github.com/ansible-lockdown/RHEL8-CIS-Audit.git
+  version: master

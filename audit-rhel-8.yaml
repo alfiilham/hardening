@@ -1,28 +1,50 @@
 ---
-- name: Run RHEL 8 CIS Audit
+- name: Audit
   hosts: all
   become: yes
-
-  roles:
-    - role: RHEL8-CIS-Audit
+  vars:
+    remote_server: "10.8.230.36"
+    remote_path: "/var/www/html"
+    remote_user: "root"
+    remote_password: "P@ssw0rd"
 
   tasks:
-    - name: Run RHEL8-CIS-Audit
-      include_role:
-        name: RHEL8-CIS-Audit
-      register: audit_result
-
-    - name: Display audit results
-      debug:
-        var: audit_result
-
-    - name: Read the audit report file
-      become: yes
-      ansible.builtin.command:
-        cmd: cat /path/to/audit/report/file
-      register: report_content
+    - name: Check if openscap-scanner is installed
+      command: rpm -q openscap-scanner
+      register: openscap_scanner_installed
       ignore_errors: yes
 
-    - name: Display the audit report content
-      debug:
-        var: report_content.stdout
+    - name: Install openscap-scanner if not installed
+      yum:
+        name: openscap-scanner
+        state: present
+      when: openscap_scanner_installed.rc != 0
+
+    - name: Check if scap-security-guide is installed
+      command: rpm -q scap-security-guide
+      register: scap_security_guide_installed
+      ignore_errors: yes
+
+    - name: Install scap-security-guide if not installed
+      yum:
+        name: scap-security-guide
+        state: present
+      when: scap_security_guide_installed.rc != 0
+
+    - name: Run oscap scan
+      command: >
+        oscap xccdf eval
+        --profile {{ profile }}
+        --results-arf results.xml
+        --report {{ ip_address }}.html
+        /usr/share/xml/scap/ssg/content/ssg-rhel8-ds.xml
+      args:
+        creates: "{{ ip_address }}.html"
+
+    - name: Copy the report to the remote server
+      delegate_to: localhost
+      become: no
+      ansible.builtin.shell: |
+        sshpass -p '{{ remote_password }}' scp {{ ip_address }}.html {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
+      args:
+        creates: "{{ remote_path }}/{{ ip_address }}.html"

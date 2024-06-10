@@ -13,4 +13,4 @@
         rhel8cis_section5: "{{ ('rhel8cis_section5: true' in result) | default(false) }}"
         rhel8cis_section6: "{{ ('rhel8cis_section6: true' in result) | default(false) }}"
       tags:
-        - level2-workstation
+        - level2_workstation

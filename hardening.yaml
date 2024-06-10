@@ -6,11 +6,11 @@
   roles:
     - role: RHEL8-CIS
       vars:
-        rhel8cis_section1: true
-        rhel8cis_section2: true
-        rhel8cis_section3: true
-        rhel8cis_section4: true
-        rhel8cis_section5: true
-        rhel8cis_section6: true
+        rhel8cis_section1: "{{ 'rhel8cis_section1: true' in result }}"
+        rhel8cis_section2: "{{ 'rhel8cis_section2: true' in result }}"
+        rhel8cis_section3: "{{ 'rhel8cis_section3: true' in result }}"
+        rhel8cis_section4: "{{ 'rhel8cis_section4: true' in result }}"
+        rhel8cis_section5: "{{ 'rhel8cis_section5: true' in result }}"
+        rhel8cis_section6: "{{ 'rhel8cis_section6: true' in result }}"
       tags:
         - level1-workstation

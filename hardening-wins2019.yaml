@@ -3,3 +3,5 @@
   hosts: all
   roles:
     - role: Windows-2019-CIS
+      tags:
+        - level1-memberserver

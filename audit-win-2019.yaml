@@ -1,56 +1,42 @@
 ---
-- name: Download, install goss and gost, audit and copy result JSON file
+- name: Install Goss and run Windows 2019 CIS Audit
   hosts: all
-  become: yes
-  gather_facts: yes
-  vars:
-    remote_server: "10.8.230.36"
-    remote_path: "/var/www/html"
-    remote_user: "root"
-    remote_password: "P@ssw0rd"
-    local_path: "/tmp"
-    audit_dir: "C:\\path\\to\\audit-files"
-    goss_url: "https://github.com/aelsabbahy/goss/releases/download/v0.3.6/goss-windows-amd64.exe
-  roles:
-    - role: Windows-2019-CIS
-      tags:
-        - level1-memberserver
+  gather_facts: no
   tasks:
-    - name: Download goss
-      ansible.builtin.win_get_url:
-        url: "{{ goss_url }}"
-        dest: "C:\\Program Files\\goss.exe"
+    - name: Install Chocolatey (if not installed)
+      win_chocolatey:
+        name: chocolatey
+        state: present
 
-    - name: Ensure goss is executable
-      ansible.builtin.win_command: |
-        icacls "C:\\Program Files\\goss.exe" /grant Everyone:F
+    - name: Install Goss using Chocolatey
+      win_chocolatey:
+        name: goss
+        state: present
 
-    - name: Find the latest JSON file
-      ansible.builtin.win_find:
-        paths: "{{ audit_dir }}"
-        patterns: "*.json"
-        recurse: yes
-      register: found_files
+    - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
+      win_shell: |
+        if (-not (Test-Path -Path "C:\audit")) {
+          git clone https://github.com/ansible-lockdown/Windows-2019-CIS-Audit.git C:\audit
+        }
+      args:
+        creates: C:\audit
 
-    - name: Set the path to the latest JSON file
-      set_fact:
-        latest_json_file: "{{ found_files.files | sort(attribute='mtime', reverse=true) | first | default({}) }}"
+    - name: Ensure Goss is installed
+      win_command: goss --version
+      register: goss_version
 
-    - name: Ensure the latest JSON file is found
-      ansible.builtin.assert:
-        that:
-          - latest_json_file.path is defined
-        fail_msg: "No JSON files found in the directory {{ audit_dir }}"
+    - name: Check if Goss is installed
+      win_debug:
+        msg: "Goss version: {{ goss_version.stdout }}"
 
-    - name: Fetch the latest audit result JSON file from the Windows managed node
-      ansible.builtin.win_copy:
-        src: "{{ latest_json_file.path }}"
-        dest: "{{ local_path }}\\audit-result.json"
-      when: latest_json_file.path is defined
-      register: fetch_result
+    - name: Run Goss audit
+      win_shell: |
+        Set-Location -Path C:\audit
+        goss -g windows-2019-cis.goss.yaml v
+      args:
+        chdir: C:\audit
+      register: goss_audit
 
-    - name: Copy the JSON file to the remote server
-      ansible.builtin.shell: |
-        sshpass -p '{{ remote_password }}' scp -o StrictHostKeyChecking=no "{{ fetch_result.dest }}" {{ remote_user }}@{{ remote_server }}:{{ remote_path }}/audit-result.json
-      delegate_to: localhost
-      when: fetch_result is defined
+    - name: Show Goss audit results
+      win_debug:
+        msg: "{{ goss_audit.stdout }}"

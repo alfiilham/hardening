@@ -8,6 +8,11 @@
         name: chocolatey
         state: present
 
+    - name: Install Git using Chocolatey
+      win_chocolatey:
+        name: git
+        state: present
+
     - name: Install Goss using Chocolatey
       win_chocolatey:
         name: goss

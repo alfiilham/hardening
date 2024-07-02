@@ -28,7 +28,7 @@
         cmd: powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force;"
 
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
-      community.windows.win_shell: |
+      win_shell: |
         if (-not (Test-Path -Path "C:\audit")) {
           & 'C:\Program Files\Git\bin\git.exe' clone https://github.com/ansible-lockdown/Windows-2019-CIS-Audit.git C:\audit
         }
@@ -47,7 +47,7 @@
     - name: Run Goss audit
       win_shell: |
         Set-Location -Path C:\audit
-        C:\goss.exe -g windows-2019-cis.goss.yaml v
+        & 'C:\goss.exe' -g windows-2019-cis.goss.yaml v
       args:
         chdir: C:\audit
       register: goss_audit

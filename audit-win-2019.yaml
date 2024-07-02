@@ -61,7 +61,6 @@
     - name: Show Goss audit results
       debug:
         msg: "{{ goss_audit.stdout }}"
-        - name: Copy latest JSON file to remote server
 
     - name: Find the latest JSON file
       community.windows.win_find:

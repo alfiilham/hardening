@@ -19,7 +19,8 @@
         dest: C:\goss.exe
 
     - name: Ensure Goss binary is executable
-      community.windows.win_command: powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force;"
+      community.windows.win_command:
+        command: powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force;"
 
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
       win_shell: |
@@ -30,7 +31,8 @@
         creates: C:\audit
 
     - name: Ensure Goss is installed
-      community.windows.win_command: C:\goss.exe --version
+      community.windows.win_command:
+        command: C:\goss.exe --version
       register: goss_version
 
     - name: Check if Goss is installed

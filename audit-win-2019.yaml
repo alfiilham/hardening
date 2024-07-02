@@ -13,10 +13,13 @@
         name: git
         state: present
 
-    - name: Install Goss using Chocolatey
-      win_chocolatey:
-        name: goss
-        state: present
+    - name: Download Goss binary
+      community.windows.win_get_url:
+        url: https://github.com/aelsabbahy/goss/releases/download/v0.3.16/goss-windows-amd64.exe
+        dest: C:\goss.exe
+
+    - name: Ensure Goss binary is executable
+      community.windows.win_command: powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force;"
 
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
       win_shell: |
@@ -27,7 +30,7 @@
         creates: C:\audit
 
     - name: Ensure Goss is installed
-      win_command: goss --version
+      community.windows.win_command: C:\goss.exe --version
       register: goss_version
 
     - name: Check if Goss is installed
@@ -35,9 +38,9 @@
         msg: "Goss version: {{ goss_version.stdout }}"
 
     - name: Run Goss audit
-      win_shell: |
+      community.windows.win_shell: |
         Set-Location -Path C:\audit
-        goss -g windows-2019-cis.goss.yaml v
+        C:\goss.exe -g windows-2019-cis.goss.yaml v
       args:
         chdir: C:\audit
       register: goss_audit

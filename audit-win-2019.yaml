@@ -61,3 +61,30 @@
     - name: Show Goss audit results
       debug:
         msg: "{{ goss_audit.stdout }}"
+        - name: Copy latest JSON file to remote server
+
+    - name: Find the latest JSON file
+      community.windows.win_find:
+        paths: C:\remediation_audit_logs
+        recurse: no
+        patterns: '*.json'
+        age: 1d
+      register: json_files
+
+    - name: Set fact for the latest JSON file
+      ansible.builtin.set_fact:
+        latest_json_file: "{{ json_files.files | sort(attribute='mtime', reverse=True) | first }}"
+
+    - name: Copy the latest JSON file to control machine
+      community.windows.win_copy:
+        src: "{{ latest_json_file.path }}"
+        dest: "/tmp/{{ latest_json_file.path | basename }}"
+      when: latest_json_file is defined
+
+    - name: Copy the JSON file to the Linux server
+      ansible.builtin.copy:
+        src: "/tmp/{{ latest_json_file.path | basename }}"
+        dest: "/var/www/html/"
+      delegate_to: 10.8.230.36
+      vars:
+        ansible_ssh_pass: "P@ssw0rd"

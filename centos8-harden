@@ -1,0 +1,14 @@
+---
+- name: Apply CENTOS 8 CIS Hardening and Run Audit
+  hosts: all
+  become: yes
+
+  roles:
+    - role: CENTOS8-CIS-Remediate
+      vars:
+        section_1: true
+        section_2: true
+        section_3: true
+        section_4: true
+        section_5: true
+        section_6: true

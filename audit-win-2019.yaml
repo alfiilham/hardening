@@ -75,7 +75,7 @@
         latest_json_file: "{{ json_files.files | sort(attribute='mtime', reverse=True) | first }}"
 
     - name: Copy the latest JSON file to control machine
-      cwin_copy:
+      win_copy:
         src: "{{ latest_json_file.path }}"
         dest: "/tmp/{{ latest_json_file.path | basename }}"
       when: latest_json_file is defined

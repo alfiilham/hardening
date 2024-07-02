@@ -60,7 +60,7 @@
         Set-Location -Path C:\remediation_audit_logs\Windows-2019-CIS-Audit
         & .\run_audit.ps1
       args:
-        chdir: C:\audit
+        chdir: C:\remediation_audit_logs\Windows-2019-CIS-Audit
       register: goss_audit
 
     - name: Show Goss audit results

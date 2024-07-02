@@ -31,7 +31,7 @@
       register: goss_version
 
     - name: Check if Goss is installed
-      win_debug:
+      debug:
         msg: "Goss version: {{ goss_version.stdout }}"
 
     - name: Run Goss audit
@@ -43,5 +43,5 @@
       register: goss_audit
 
     - name: Show Goss audit results
-      win_debug:
+      debug:
         msg: "{{ goss_audit.stdout }}"

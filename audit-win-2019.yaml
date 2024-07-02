@@ -30,7 +30,7 @@
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
       win_shell: |
         if (-not (Test-Path -Path "C:\audit")) {
-          C:\Program Files\Git\bin\git.exe clone https://github.com/ansible-lockdown/Windows-2019-CIS-Audit.git C:\audit
+          "C:\Program Files\Git\bin\git.exe" clone https://github.com/ansible-lockdown/Windows-2019-CIS-Audit.git C:\audit
         }
       args:
         creates: C:\audit

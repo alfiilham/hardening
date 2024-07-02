@@ -46,6 +46,7 @@
 
     - name: Run Goss audit
       win_shell: |
+        $env:GOSS_USE_ALPHA=1
         Set-Location -Path C:\audit
         & 'C:\goss.exe' -g windows-2019-cis.goss.yaml v
       args:

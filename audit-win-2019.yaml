@@ -39,7 +39,7 @@
         
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
       win_shell: |
-        if (-not (Test-Path -Path "C:\audit")) {
+        if (-not (Test-Path -Path "C:\remediation_audit_logs\Windows-2019-CIS-Audit")) {
           & 'C:\Program Files\Git\bin\git.exe' clone https://github.com/alfiilham/Windows-2019-CIS-Audit.git C:\remediation_audit_logs\Windows-2019-CIS-Audit
         }
       args:

@@ -15,7 +15,7 @@
 
     - name: Download Goss binary
       win_get_url:
-        url: https://github.com/aelsabbahy/goss/releases/download/v0.3.16/goss-windows-amd64.exe
+        url: https://github.com/goss-org/goss/releases/download/v0.4.7/goss-windows-amd64.exe
         dest: C:\goss.exe
 
     - name: Ensure Goss binary is executable

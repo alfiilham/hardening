@@ -44,11 +44,11 @@
       debug:
         msg: "Goss version: {{ goss_version.stdout }}"
 
-    - name: Run Goss audit
+    - name: Run Goss audit using run_audit.ps1
       win_shell: |
         $env:GOSS_USE_ALPHA=1
         Set-Location -Path C:\audit
-        & 'C:\goss.exe' -g windows-2019-cis.goss.yaml v
+        & .\run_audit.ps1
       args:
         chdir: C:\audit
       register: goss_audit

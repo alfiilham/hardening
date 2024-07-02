@@ -12,6 +12,11 @@
       win_chocolatey:
         name: git
         state: present
+        
+    - name: Ensure Git is in the system PATH
+      win_shell: |
+        $env:Path += ";C:\Program Files\Git\bin"
+        [System.Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine)
 
     - name: Download Goss binary
       win_get_url:

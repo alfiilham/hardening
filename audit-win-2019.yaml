@@ -21,7 +21,7 @@
     - name: Download Goss binary
       win_get_url:
         url: https://github.com/goss-org/goss/releases/download/v0.4.7/goss-windows-amd64.exe
-        dest: C:\goss.exe
+        dest: C:\remediation_audit_logs\goss.exe
 
     - name: Ensure Goss binary is executable
       win_command:
@@ -30,14 +30,14 @@
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
       win_shell: |
         if (-not (Test-Path -Path "C:\audit")) {
-          & 'C:\Program Files\Git\bin\git.exe' clone https://github.com/ansible-lockdown/Windows-2019-CIS-Audit.git C:\audit
+          & 'C:\Program Files\Git\bin\git.exe' clone https://github.com/alfiilham/Windows-2019-CIS-Audit.git C:\remediation_audit_logs\Windows-2019-CIS-Audit
         }
       args:
         creates: C:\audit
 
     - name: Ensure Goss is installed
       win_command:
-        cmd: C:\goss.exe --version
+        cmd: C:\remediation_audit_logs\goss.exe --version
       register: goss_version
 
     - name: Check if Goss is installed
@@ -47,7 +47,7 @@
     - name: Run Goss audit using run_audit.ps1
       win_shell: |
         $env:GOSS_USE_ALPHA=1
-        Set-Location -Path C:\audit
+        Set-Location -Path C:\remediation_audit_logs\Windows-2019-CIS-Audit
         & .\run_audit.ps1
       args:
         chdir: C:\audit

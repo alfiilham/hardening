@@ -4,17 +4,17 @@
   gather_facts: no
   tasks:
     - name: Install Chocolatey (if not installed)
-      win_chocolatey:
+      community.windows.win_chocolatey:
         name: chocolatey
         state: present
 
     - name: Install Git using Chocolatey
-      win_chocolatey:
+      community.windows.win_chocolatey:
         name: git
         state: present
 
     - name: Install Goss using Chocolatey
-      win_chocolatey:
+      community.windows.win_chocolatey:
         name: goss
         state: present
 

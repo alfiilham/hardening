@@ -18,6 +18,11 @@
         $env:Path += ";C:\Program Files\Git\bin"
         [System.Environment]::SetEnvironmentVariable('Path', $env:Path, [System.EnvironmentVariableTarget]::Machine)
 
+    - name: Create directory for Goss
+      win_file:
+        path: C:\remediation_audit_logs
+        state: directory
+        
     - name: Download Goss binary
       win_get_url:
         url: https://github.com/goss-org/goss/releases/download/v0.4.7/goss-windows-amd64.exe
@@ -26,7 +31,12 @@
     - name: Ensure Goss binary is executable
       win_command:
         cmd: powershell.exe -Command "Set-ExecutionPolicy Bypass -Scope Process -Force;"
-
+        
+    - name: Create directory for Audit
+      win_file:
+        path: C:\remediation_audit_logs\Windows-2019-CIS-Audit
+        state: directory
+        
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
       win_shell: |
         if (-not (Test-Path -Path "C:\audit")) {

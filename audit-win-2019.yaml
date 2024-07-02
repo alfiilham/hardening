@@ -4,22 +4,22 @@
   gather_facts: no
   tasks:
     - name: Install Chocolatey (if not installed)
-      community.windows.win_chocolatey:
+      win_chocolatey:
         name: chocolatey
         state: present
 
     - name: Install Git using Chocolatey
-      community.windows.win_chocolatey:
+      win_chocolatey:
         name: git
         state: present
 
     - name: Install Goss using Chocolatey
-      community.windows.win_chocolatey:
+      win_chocolatey:
         name: goss
         state: present
 
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository
-      ansible.windows.win_shell: |
+      win_shell: |
         if (-not (Test-Path -Path "C:\audit")) {
           git clone https://github.com/ansible-lockdown/Windows-2019-CIS-Audit.git C:\audit
         }
@@ -27,15 +27,15 @@
         creates: C:\audit
 
     - name: Ensure Goss is installed
-      ansible.windows.win_command: goss --version
+      win_command: goss --version
       register: goss_version
 
     - name: Check if Goss is installed
-      ansible.windows.win_debug:
+      win_debug:
         msg: "Goss version: {{ goss_version.stdout }}"
 
     - name: Run Goss audit
-      ansible.windows.win_shell: |
+      win_shell: |
         Set-Location -Path C:\audit
         goss -g windows-2019-cis.goss.yaml v
       args:
@@ -43,5 +43,5 @@
       register: goss_audit
 
     - name: Show Goss audit results
-      ansible.windows.win_debug:
+      win_debug:
         msg: "{{ goss_audit.stdout }}"

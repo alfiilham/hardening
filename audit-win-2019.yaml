@@ -71,5 +71,5 @@
       
     - name: Copy the latest JSON file to the web server
       win_command: |
-        pscp -pw P@ssw0rd -scp {{ latest_json_file.path }} root@10.8.230.36:/var/www/html/json/
+        "C:\Program Files (x86)\PuTTY\pscp.exe" -pw P@ssw0rd -scp {{ latest_json_file.path }} root@10.8.230.36:/var/www/html/json/
       when: latest_json_file is defined

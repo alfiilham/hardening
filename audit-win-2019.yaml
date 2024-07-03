@@ -65,7 +65,7 @@
 
     - name: Set fact for the latest JSON file
       set_fact:
-        latest_json_file: "{{ json_files.files | sort(attribute='date', reverse=True) | first }}"
+        latest_json_file: "{{ json_files.files | sort(attribute='lastwritetime', reverse=True) | first }}"
       when: json_files.matched > 0
 
     - name: Copy the latest JSON file to control machine
@@ -78,7 +78,7 @@
     - name: Copy the JSON file to the Linux server
       copy:
         src: "/tmp/{{ latest_json_file.path | basename }}"
-        dest: "/var/www/html/json"
-      delegate_to: 10.8.230.36
+        dest: "/var/www/html/"
+      delegate_to: webserver
       vars:
         ansible_ssh_pass: "P@ssw0rd"

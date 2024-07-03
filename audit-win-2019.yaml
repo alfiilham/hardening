@@ -71,5 +71,5 @@
       
     - name: Copy the latest JSON file to the web server
       win_command: |
-        "C:\ProgramData\chocolatey\bin\pscp.exe" -pw P@ssw0rd -scp {{ latest_json_file.path }} root@10.8.230.36:/var/www/html/json/
+        "C:\ProgramData\chocolatey\bin\pscp.exe" -hostkey "ssh-ed25519 255 SHA256:PlDHbk59M9/CaDetIp6nqLZLY9mCfkliCPrytSsa3r8" -pw P@ssw0rd -scp {{ latest_json_file.path }} root@10.8.230.36:/var/www/html/json/
       when: latest_json_file is defined

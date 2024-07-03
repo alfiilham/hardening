@@ -22,7 +22,7 @@
       win_file:
         path: C:\remediation_audit_logs
         state: directory
-        
+
     - name: Download and ensure Goss binary is executable
       win_get_url:
         url: https://github.com/goss-org/goss/releases/download/v0.4.7/goss-windows-amd64.exe
@@ -61,7 +61,6 @@
       win_find:
         paths: C:\remediation_audit_logs
         patterns: '*.json'
-        age: 1d
       register: json_files
 
     - name: Set fact for the latest JSON file
@@ -70,15 +69,16 @@
       when: json_files.matched > 0
 
     - name: Copy the latest JSON file to control machine
-      win_copy:
+      fetch:
         src: "{{ latest_json_file.path }}"
-        dest: "/tmp/{{ latest_json_file.path | basename }}"
+        dest: "/tmp/"
+        flat: yes
       when: latest_json_file is defined
 
-    - name: Copy the JSON file to the Linux server
+    - name: Copy the JSON file to the web server
       copy:
         src: "/tmp/{{ latest_json_file.path | basename }}"
         dest: "/var/www/html/"
-      delegate_to: 10.8.230.36
+      delegate_to: webserver
       vars:
         ansible_ssh_pass: "P@ssw0rd"

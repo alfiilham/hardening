@@ -78,7 +78,7 @@
     - name: Copy the JSON file to the web server
       copy:
         src: "/tmp/{{ latest_json_file.path | basename }}"
-        dest: "/var/www/html/"
+        dest: "/var/www/html/json"
       delegate_to: webserver
       vars:
         ansible_ssh_pass: "P@ssw0rd"

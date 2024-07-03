@@ -10,6 +10,7 @@
       loop:
         - chocolatey
         - git
+        - putty
 
     - name: Ensure Git is in the system PATH
       win_environment:
@@ -67,19 +68,8 @@
       set_fact:
         latest_json_file: "{{ json_files.files | sort(attribute='lastwritetime', reverse=True) | first }}"
       when: json_files.matched > 0
-
-    - name: Copy the latest JSON file to control machine
-      fetch:
-        src: "{{ latest_json_file.path }}"
-        dest: "/tmp/"
-        flat: yes
+      
+    - name: Copy the latest JSON file to the web server
+      win_command: |
+        pscp -pw P@ssw0rd -scp {{ latest_json_file.path }} root@10.8.230.36:/var/www/html/json/
       when: latest_json_file is defined
-
-    - name: Copy the JSON file to the Linux server
-      copy:
-        src: "/tmp/{{ latest_json_file.path }}"
-        dest: "/var/www/html/json"
-      delegate_to: 10.8.230.36
-      vars:
-        ansible_user: "root"
-        ansible_ssh_pass: "P@ssw0rd"

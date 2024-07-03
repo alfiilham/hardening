@@ -81,4 +81,5 @@
         dest: "/var/www/html/json"
       delegate_to: 10.8.230.36
       vars:
+        ansible_ssh_user: "root"
         ansible_ssh_pass: "P@ssw0rd"

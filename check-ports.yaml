@@ -1,4 +1,10 @@
 ---
+- name: Ceheck Ports
+  hosts: all
+  become: yes
+
+tasks:
+ 
 - name: Gather facts on listening ports
   community.general.listen_ports_facts:
 

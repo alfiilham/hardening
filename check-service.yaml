@@ -1,20 +1,7 @@
 ---
-- name: Work with service facts II
-  hosts: localhost
+- name: Populate service facts
+  ansible.builtin.service_facts:
 
-  vars:
-    # Note1: this will be undefined until service facts are gathered
-    # Note2: this time this var will be a list of all dicts
-    # dropping the initial key wich is identical to `name`
-    running_services: "{{ ansible_facts.services | dict2items 
-      | selectattr('value.state', '==', 'running') | map(attribute='value') }}"
-
-  tasks:
-    - name: gather service facts
-      service_facts:
-
-    - name: useless task creating a file with service name in tmp
-      copy:
-        content: "ho yeah. {{ item.name }} is running"
-        dest: "/tmp/{{ item.name }}.txt"
-      loop: "{{ running_services }}"
+- name: Print service facts
+  ansible.builtin.debug:
+    var: ansible_facts.services

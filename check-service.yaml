@@ -1,7 +1,13 @@
 ---
-- name: Populate service facts
-  ansible.builtin.service_facts:
+- name: List all running services on Linux
+  hosts: all
+  become: yes  # Ensure the playbook runs with root privileges
+  tasks:
+    - name: Get the list of running services
+      shell: |
+        systemctl list-units --type=service --state=running
+      register: running_services
 
-- name: Print service facts
-  ansible.builtin.debug:
-    var: ansible_facts.services
+    - name: Print the list of running services
+      debug:
+        var: running_services.stdout

@@ -1,0 +1,11 @@
+---
+- name: List all open ports on Windows
+  hosts: windows
+  tasks:
+    - name: Get list of open ports
+      win_shell: "Get-NetTCPConnection | Select-Object LocalPort, RemotePort, State"
+      register: open_ports
+
+    - name: Display open ports
+      debug:
+        var: open_ports.stdout_lines

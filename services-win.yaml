@@ -1,0 +1,12 @@
+---
+- name: List all running services on Windows
+  hosts: windows
+  tasks:
+    - name: Gather running services information
+      win_service:
+        name: '*'
+      register: service_info
+
+    - name: Display running services
+      debug:
+        msg: "{{ service_info.services | selectattr('status', 'equalto', 'running') | map(attribute='display_name') | list }}"

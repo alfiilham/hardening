@@ -4,7 +4,7 @@
   become: yes
 
   roles:
-    - role: CENTOS8-CIS-Remediate
+    - role: UBUNTU20-CIS-Remediate
       vars:
         ubtu20cis_section1_patch: true
         ubtu20cis_section2_patch: true

@@ -1,8 +1,7 @@
   ---
-  - name: CIS Baseline Setup
-    hosts: all
-    remote_user: vagrant
-    become: yes
+      - name: Apply CENTOS 8 CIS Hardening and Run Audit
+          hosts: all
+          become: yes
 
     roles:
       - role: UBUNTU20-CIS-Remediate

@@ -1,5 +1,5 @@
   ---
-      - name: Apply CENTOS 8 CIS Hardening and Run Audit
+  - name: Apply CENTOS 8 CIS Hardening and Run Audit
           hosts: all
           become: yes
 

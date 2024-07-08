@@ -1,14 +1,14 @@
-  ---
-  - name: Apply CENTOS 8 CIS Hardening and Run Audit
-    hosts: all
-    become: yes
+---
+- name: Apply CENTOS 8 CIS Hardening and Run Audit
+  hosts: all
+  become: yes
 
-    roles:
-      - role: UBUNTU20-CIS-Remediate
-        vars:
-          ubtu20cis_section1_patch: true
-          ubtu20cis_section2_patch: true
-          ubtu20cis_section3_patch: true
-          ubtu20cis_section4_patch: true
-          ubtu20cis_section5_patch: true
-          ubtu20cis_section6_patch: true
+  roles:
+    - role: CENTOS8-CIS-Remediate
+      vars:
+        ubtu20cis_section1_patch: true
+        ubtu20cis_section2_patch: true
+        ubtu20cis_section3_patch: true
+        ubtu20cis_section4_patch: true
+        ubtu20cis_section5_patch: true
+        ubtu20cis_section6_patch: true

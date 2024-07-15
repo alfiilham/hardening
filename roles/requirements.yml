@@ -3,6 +3,10 @@
   src: https://github.com/ansible-lockdown/RHEL8-CIS.git
   version: devel
 
+- name: RHEL9-CIS
+  src: https://github.com/ansible-lockdown/RHEL9-CIS.git
+  version: devel
+  
 - name: Windows-2019-CIS
   src: https://github.com/ansible-lockdown/Windows-2019-CIS.git
   version: devel

@@ -1,0 +1,16 @@
+---
+- name: Apply RHEL 9 CIS Hardening and Run Audit
+  hosts: all
+  become: yes
+
+  roles:
+    - role: RHEL9-CIS
+      vars:
+        rhel8cis_section1: "{{ ('rhel9cis_section1: true' in result) | default(false) }}"
+        rhel8cis_section2: "{{ ('rhel9cis_section2: true' in result) | default(false) }}"
+        rhel8cis_section3: "{{ ('rhel9cis_section3: true' in result) | default(false) }}"
+        rhel8cis_section4: "{{ ('rhel9cis_section4: true' in result) | default(false) }}"
+        rhel8cis_section5: "{{ ('rhel9cis_section5: true' in result) | default(false) }}"
+        rhel8cis_section6: "{{ ('rhel9cis_section6: true' in result) | default(false) }}"
+      tags:
+        - level2_workstation

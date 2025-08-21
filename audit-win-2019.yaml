@@ -3,6 +3,32 @@
   hosts: all
   gather_facts: no
   tasks:
+    - name: Create directory for remediation logs
+      win_file:
+        path: C:\remediation_audit_logs
+        state: directory
+
+    # Ensure .NET 4.8 exists before other installs
+    - name: Check if .NET Framework 4.8 is installed
+      win_reg_stat:
+        path: HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full
+        name: Release
+      register: dotnet_reg
+
+    - name: Install .NET Framework 4.8 if not installed
+      block:
+        - name: Download .NET Framework 4.8 installer
+          win_get_url:
+            url: https://download.visualstudio.microsoft.com/download/pr/2f21ad15-9ec4-437d-b1c2-dc27a3e0f35d/3B7D2A5D6C9247D5D7DFA1476A469C10/ndp48-x86-x64-allos-enu.exe
+            dest: C:\remediation_audit_logs\ndp48.exe
+
+        - name: Install .NET Framework 4.8
+          win_package:
+            path: C:\remediation_audit_logs\ndp48.exe
+            arguments: "/quiet /norestart"
+            state: present
+      when: dotnet_reg.value is not defined or dotnet_reg.value < 528040
+
     - name: Install Chocolatey and required packages
       win_chocolatey:
         name: "{{ item }}"
@@ -18,11 +44,6 @@
         name: Path
         value: C:\Program Files\Git\bin
         level: machine
-
-    - name: Create directory for Goss
-      win_file:
-        path: C:\remediation_audit_logs
-        state: directory
 
     - name: Download and ensure Goss binary is executable
       win_get_url:
@@ -68,7 +89,7 @@
       set_fact:
         latest_json_file: "{{ json_files.files | sort(attribute='lastwritetime', reverse=True) | first }}"
       when: json_files.matched > 0
-      
+
     - name: Copy the latest JSON file to the web server
       win_command: |
         "C:\ProgramData\chocolatey\bin\pscp.exe" -hostkey "ssh-ed25519 255 SHA256:PCq5ipkZTfdCYY04S7Fzm49G8v7e4+rgtym1Ar35wBE" -pw P@ssw0rd -scp {{ latest_json_file.path }} root@10.20.10.146:/var/www/html/

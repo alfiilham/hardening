@@ -13,7 +13,7 @@
 
 - name: RHEL8-CIS-Audit
   src: https://github.com/ansible-lockdown/RHEL8-CIS-Audit.git
-  version: devel
+  version: latest
 
 - name: CENTOS8-CIS-Remediate
   src: https://github.com/gerwwr/ansible-cis-centos8.git

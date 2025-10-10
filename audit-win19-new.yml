@@ -30,14 +30,12 @@
         dest: C:\remediation_audit_logs\goss.exe
 
     - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository if not present
-      win_command: >
-      git clone https://github.com/alfiilham/Windows-2019-CIS-Audit.git
-      C:\remediation_audit_logs\Windows-2019-CIS-Audit
+      win_shell: |
+        if (-not (Test-Path -Path "C:\remediation_audit_logs\Windows-2019-CIS-Audit")) {
+          & 'C:\Program Files\Git\bin\git.exe' clone https://github.com/alfiilham/Windows-2019-CIS-Audit.git C:\remediation_audit_logs\Windows-2019-CIS-Audit
+        }
       args:
         creates: C:\remediation_audit_logs\Windows-2019-CIS-Audit
-      become: yes
-      become_method: runas
-      become_user: Administrator
 
     - name: Check Goss version
       win_command: C:\remediation_audit_logs\goss.exe --version
@@ -71,7 +69,9 @@
         latest_json_file: "{{ json_files.files | sort(attribute='lastwritetime', reverse=True) | first }}"
       when: json_files.matched > 0
       
-    - name: Copy the latest JSON file to the web server
-      win_command: |
-        "C:\ProgramData\chocolatey\bin\pscp.exe" -hostkey "SHA256:4SwfBwAFCqlEbaggbAxMp4XwWLjIAKHoCNOfrDHz75k" -pw p@ssw0rd -scp {{ latest_json_file.path }} ansible@10.100.11.14:/var/www/html/
-      when: latest_json_file is defined
+    - name: Upload JSON via PSCP (Force CMD Shell)
+      win_shell: |
+        C:\ProgramData\chocolatey\bin\pscp.exe -pw p@ssw0rd -scp "{{ latest_json_file.path }}" root@10.100.11.14:/var/www/html/
+      args:
+        executable: cmd
+      register: pscp_result

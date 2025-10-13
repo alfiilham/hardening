@@ -1,0 +1,77 @@
+---
+- name: Install Goss and run Windows 2019 CIS Audit
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Install Chocolatey and required packages
+      win_chocolatey:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - chocolatey
+        - git
+        - putty
+
+    - name: Ensure Git is in the system PATH
+      win_environment:
+        state: present
+        name: Path
+        value: C:\Program Files\Git\bin
+        level: machine
+
+    - name: Create directory for Goss
+      win_file:
+        path: C:\remediation_audit_logs
+        state: directory
+
+    - name: Download and ensure Goss binary is executable
+      win_get_url:
+        url: https://github.com/goss-org/goss/releases/download/v0.4.7/goss-windows-amd64.exe
+        dest: C:\remediation_audit_logs\goss.exe
+
+    - name: Clone the ansible-lockdown Windows 2019 CIS Audit repository if not present
+      win_shell: |
+        if (-not (Test-Path -Path "C:\remediation_audit_logs\Windows-2019-CIS-Audit")) {
+          & 'C:\Program Files\Git\bin\git.exe' clone https://github.com/alfiilham/Windows-2019-CIS-Audit.git C:\remediation_audit_logs\Windows-2019-CIS-Audit
+        }
+      args:
+        creates: C:\remediation_audit_logs\Windows-2019-CIS-Audit
+
+    - name: Check Goss version
+      win_command: C:\remediation_audit_logs\goss.exe --version
+      register: goss_version
+
+    - name: Display Goss version
+      debug:
+        msg: "Goss version: {{ goss_version.stdout }}"
+
+    - name: Run Goss audit
+      win_shell: |
+        $env:GOSS_USE_ALPHA=1
+        Set-Location -Path C:\remediation_audit_logs\Windows-2019-CIS-Audit
+        & .\run_audit.ps1
+      args:
+        chdir: C:\remediation_audit_logs\Windows-2019-CIS-Audit
+      register: goss_audit
+
+    - name: Display Goss audit results
+      debug:
+        msg: "{{ goss_audit.stdout }}"
+
+    - name: Find the latest JSON file
+      win_find:
+        paths: C:\remediation_audit_logs
+        patterns: '*.json'
+      register: json_files
+
+    - name: Set fact for the latest JSON file
+      set_fact:
+        latest_json_file: "{{ json_files.files | sort(attribute='lastwritetime', reverse=True) | first }}"
+      when: json_files.matched > 0
+      
+    - name: Upload JSON via PSCP (Force CMD Shell)
+      win_shell: |
+        C:\ProgramData\chocolatey\bin\pscp.exe -batch -pw p@ssw0rd "{{ latest_json_file.path }}" root@10.100.11.14:/var/www/html/
+      args:
+        executable: cmd
+      register: pscp_result

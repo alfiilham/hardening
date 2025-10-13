@@ -70,6 +70,8 @@
       when: json_files.matched > 0
       
     - name: Copy the latest JSON file to the web server
-      win_command: |
-        "C:\ProgramData\chocolatey\bin\pscp.exe" -hostkey "SHA256:4SwfBwAFCqlEbaggbAxMp4XwWLjIAKHoCNOfrDHz75k" -pw p@ssw0rd -scp {{ latest_json_file.path }} root@10.100.11.14:/var/www/html/
-      when: latest_json_file is defined
+      win_shell: |
+        C:\ProgramData\chocolatey\bin\pscp.exe -pw p@ssw0rd -scp "{{ latest_json_file.path }}" root@10.100.11.14:/var/www/html/
+      args:
+        executable: cmd
+      register: pscp_result

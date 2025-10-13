@@ -71,7 +71,7 @@
       
     - name: Upload JSON via PSCP (Force CMD Shell)
       win_shell: |
-        C:\ProgramData\chocolatey\bin\pscp.exe -pw p@ssw0rd -scp "{{ latest_json_file.path }}" root@10.100.11.14:/var/www/html/
+        C:\ProgramData\chocolatey\bin\pscp.exe -pw p@ssw0rd -scp "{{ latest_json_file.path }}" root@10.100.11.99:/var/www/html/
       args:
         executable: cmd
       register: pscp_result

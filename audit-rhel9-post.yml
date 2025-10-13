@@ -1,0 +1,42 @@
+
+---
+- name: Audit
+  hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    remote_server: "10.100.11.14"
+    remote_path: "/var/www/html/"
+    remote_user: "root"
+    remote_password: "p@ssw0rd"
+
+  tasks:
+    - name: Ensure required packages are installed
+      yum:
+        name:
+          - openscap-scanner
+          - scap-security-guide
+          - sshpass
+        state: present
+      register: install_packages
+      failed_when: install_packages.failed > 0
+
+    - name: Run OpenSCAP CIS scan
+      shell: >
+        oscap xccdf eval
+        --profile xccdf_org.ssgproject.content_profile_cis
+        --report /tmp/pre-report-{{ ansible_default_ipv4.address }}.html
+        /usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml
+      register: oscap_scan
+      failed_when: oscap_scan.rc not in [0,2]
+
+    - name: Copy the report to the remote server
+      ansible.builtin.shell: |
+        sshpass -p '{{ remote_password }}' scp -o StrictHostKeyChecking=no \
+        /tmp/pre-report-{{ ansible_default_ipv4.address }}.html \
+        {{ remote_user }}@{{ remote_server }}:{{ remote_path }}
+
+    - name: Set permissions to 777 for the copied report
+      ansible.builtin.shell: |
+        sshpass -p '{{ remote_password }}' ssh -o StrictHostKeyChecking=no \
+        {{ remote_user }}@{{ remote_server }} chmod 777 {{ remote_path }}/post-report-{{ ansible_default_ipv4.address }}.html

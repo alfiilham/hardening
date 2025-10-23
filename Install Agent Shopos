@@ -1,0 +1,15 @@
+--- 
+- name: Install agent sophos
+  hosts: all
+  tasks:
+    - name: Download  Sophos
+      win_get_url:
+        url: "Sophos endpoint Download link"
+        dest: C:\Windows\Temp\SophosSetup.exe
+
+    - name: Install Sophos
+      win_package:
+        path: C:\Windows\Temp\SophosSetup.exe
+        product_id: 'Sophos'
+        arguments: --quiet
+        state: present

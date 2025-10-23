@@ -1,15 +1,15 @@
 --- 
 - name: Install agent sophos
   hosts: all
+  gather_facts: no
   tasks:
     - name: Download  Sophos
       win_get_url:
-        url: "Sophos endpoint Download link"
+        url: "https://dzr-api-amzn-us-west-2-fa88.api-upe.p.hmr.sophos.com/api/download/16fd4293d2508fe500192826c061b09d/SophosSetup.exe"
         dest: C:\Windows\Temp\SophosSetup.exe
 
     - name: Install Sophos
       win_package:
         path: C:\Windows\Temp\SophosSetup.exe
-        product_id: 'Sophos'
         arguments: --quiet
         state: present
